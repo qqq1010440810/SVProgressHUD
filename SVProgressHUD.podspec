@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.summary  = 'A clean and lightweight progress HUD for your iOS and tvOS app.'
   s.homepage = 'https://github.com/SVProgressHUD/SVProgressHUD'
   s.authors   = { 'Sam Vermette' => 'hello@samvermette.com', 'Tobias Totzek' => 'tobias@totzek.me' }
-  s.source   = { :git => 'https://github.com/qqq1010440810/SVProgressHUD.git', :tag => s.version.to_s }
+  s.source   = { :git => 'https://github.com/SVProgressHUD/SVProgressHUD.git', :tag => s.version.to_s }
 
   s.description = 'SVProgressHUD is a clean and easy-to-use HUD meant to display the progress of an ongoing task on iOS and tvOS. The success and error icons are from Freepik from Flaticon and are licensed under Creative Commons BY 3.0.'
 
@@ -18,12 +18,14 @@ Pod::Spec.new do |s|
 
   s.subspec 'Core' do |core|
     core.source_files = 'SVProgressHUD/*.{h,m}'
-    core.resources =  ['SVProgressHUD/SVProgressHUD.bundle', 'SVProgressHUD/PrivacyInfo.xcprivacy']
+    core.resources = ['SVProgressHUD/SVProgressHUD.bundle']
+    core.resource_bundles = {'SVProgressHUD' => ['SVProgressHUD/PrivacyInfo.xcprivacy']}
   end
 
   s.subspec 'AppExtension' do |ext|
     ext.source_files = 'SVProgressHUD/*.{h,m}'
-    ext.resources = ['SVProgressHUD/SVProgressHUD.bundle', 'SVProgressHUD/PrivacyInfo.xcprivacy']
+    ext.resources = ['SVProgressHUD/SVProgressHUD.bundle']
+    ext.resource_bundles = {'AppExtension' => ['SVProgressHUD/PrivacyInfo.xcprivacy']}
     ext.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'SV_APP_EXTENSIONS=1' }
   end
 end
