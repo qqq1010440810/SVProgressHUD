@@ -388,5 +388,7 @@ typedef void (^SVProgressHUDDismissCompletion)(void);
 /// @return A time interval representing the display duration.
 + (NSTimeInterval)displayDurationForString:(nullable NSString*)string;
 
++ (void)showStatus:(nullable NSString*)status;
+
 @end
 
