@@ -1523,4 +1523,43 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
     if (!_isInitializing) _maxSupportedWindowLevel = maxSupportedWindowLevel;
 }
 
++ (void)showStatus:(nullable NSString*)status{
+    NSTimeInterval displayInterval = [self displayDurationForString:status];
+    [[self sharedView] msgStatus:status duration:displayInterval];
+
+}
+- (void)msgStatus:(NSString*)status duration:(NSTimeInterval)duration {
+    __weak SVProgressHUD *weakSelf = self;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        __strong SVProgressHUD *strongSelf = weakSelf;
+        if(strongSelf){
+            // Stop timer
+            strongSelf.fadeOutTimer = nil;
+            strongSelf.graceTimer = nil;
+            
+            // Update / Check view hierarchy to ensure the HUD is visible
+            [strongSelf updateViewHierarchy];
+            
+            // Reset progress and cancel any running animation
+            strongSelf.progress = SVProgressHUDUndefinedProgress;
+            [strongSelf cancelRingLayerAnimation];
+            [strongSelf cancelIndefiniteAnimatedViewAnimation];
+            strongSelf.imageView.hidden = YES;
+            [strongSelf.imageView removeFromSuperview];
+            strongSelf.imageView = nil;
+            // Update text
+            strongSelf.statusLabel.hidden = status.length == 0;
+            strongSelf.statusLabel.text = status;
+            // Fade in delayed if a grace time is set
+            // An image will be dismissed automatically. Thus pass the duration as userInfo.
+            if (self.graceTimeInterval > 0.0 && self.backgroundView.alpha == 0.0f) {
+                strongSelf.graceTimer = [NSTimer timerWithTimeInterval:self.graceTimeInterval target:strongSelf selector:@selector(fadeIn:) userInfo:@(duration) repeats:NO];
+                [[NSRunLoop mainRunLoop] addTimer:strongSelf.graceTimer forMode:NSRunLoopCommonModes];
+            } else {
+                [strongSelf fadeIn:@(duration)];
+            }
+        }
+    }];
+}
+
 @end
